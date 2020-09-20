@@ -139,5 +139,7 @@ def tri_traversal(cost, heuristic, start, goals):
     res = path_obj.calculate_ucs_path()
     path_obj.reset_temp()
     res1 = path_obj.calculate_astar_path()
+    path_obj.reset_temp()
+    res2 = path_obj.calculate_dfs_path()
 
-    return None, res, res1
+    return res2, res, res1
