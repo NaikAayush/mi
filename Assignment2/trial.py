@@ -1,4 +1,3 @@
-
 class Path_Calculator:
     def __init__(self,cost,heuristic,start_point,goals):
         self.cost_matrix = cost
@@ -6,10 +5,30 @@ class Path_Calculator:
         self.start_point = start_point
         self.goals = goals
         self.ucs_path = {"path_list":[],"visited":[]}# path_list -> [[path_cost1,[1,2,3]],[path_cost2,[1,2,4,5]].....]
-        self.dfs_path = {}
+        self.dfs_path = {"path_list":[],"visited":set()}
         self.astar_path = {"path_list":[],"visited":[]}# path_list -> [[path_cost + heuristc,[1,2,4,6]],......]
         self.temp = start_point
 
+    def find_dfs_paths(self,node,visited):
+        paths = self.cost_matrix[node]
+        temp = []
+        for i, cost in enumerate(paths):
+            if cost>0 and i not in visited:
+                temp.append(i)
+        temp.reverse()
+        return temp
+
+    def calculate_dfs_path(self):
+        stack = [(self.start_point, [self.start_point])]
+        while stack:
+            (node, self.dfs_path["path_list"]) = stack.pop()
+            if node not in self.dfs_path["visited"]:
+                if node in self.goals:
+                    return self.dfs_path["path_list"]
+                self.dfs_path["visited"].add(node)
+                path_list = self.find_dfs_paths(node,self.dfs_path["visited"])
+                for neighbour in path_list:
+                    stack.append((neighbour, self.dfs_path["path_list"] + [neighbour]))
 
     def calculate_ucs_path(self):
         if self.start_point in self.goals:
@@ -102,3 +121,5 @@ if __name__=="__main__":
     path_obj.reset_temp()
     res1 = path_obj.calculate_astar_path()
     print(res1)
+    res2 = path_obj.calculate_dfs_path()
+    print(res2)
