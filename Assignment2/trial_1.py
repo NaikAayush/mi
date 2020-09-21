@@ -107,6 +107,7 @@ class Path_Calculator:
 
                 if self.temp[-1] in self.goals:
                     ans.append([least_cost,self.temp])
+                    continue
                     #return self.temp
                 else:
                     paths = self.cost_matrix[self.temp[-1]]
