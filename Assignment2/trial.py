@@ -4,9 +4,14 @@ class Path_Calculator:
         self.heuristic_list = heuristic
         self.start_point = start_point
         self.goals = goals
-        self.ucs_path = {"path_list":[],"visited":[]}# path_list -> [[path_cost1,[1,2,3]],[path_cost2,[1,2,4,5]].....]
-        self.dfs_path = {"path_list":[],"visited":set()}
-        self.astar_path = {"path_list":[],"visited":[]}# path_list -> [[path_cost + heuristc,[1,2,4,6]],......]
+        # path_list -> [[path_cost1,[1,2,3]],[path_cost2,[1,2,4,5]].....]
+        self.ucs_path = {"path_list": [],
+                         "visited": []}
+        self.dfs_path = {"path_list": [],
+                         "visited": set()}
+        # path_list -> [[path_cost + heuristc,[1,2,4,6]],......]
+        self.astar_path = {"path_list": [],
+                           "visited": []}
         self.temp = start_point
 
     def find_dfs_paths(self,node,visited):
@@ -19,6 +24,8 @@ class Path_Calculator:
         return temp
 
     def calculate_dfs_path(self):
+        self.reset_temp()
+
         stack = [(self.start_point, [self.start_point])]
         while stack:
             (node, self.dfs_path["path_list"]) = stack.pop()
@@ -29,8 +36,11 @@ class Path_Calculator:
                 path_list = self.find_dfs_paths(node,self.dfs_path["visited"])
                 for neighbour in path_list:
                     stack.append((neighbour, self.dfs_path["path_list"] + [neighbour]))
+        return stack
 
     def calculate_ucs_path(self):
+        self.reset_temp()
+
         if self.start_point in self.goals:
             return [self.start_point]
 
@@ -69,77 +79,73 @@ class Path_Calculator:
         return []
 
     def calculate_astar_path(self):
+        self.reset_temp()
+
         if self.start_point in self.goals:
             return [self.start_point]
 
         self.astar_path["visited"].append(self.temp)
         paths = self.cost_matrix[self.temp]
-        possible_paths = [[paths[i]+self.heuristic_list[i],i] for i in range(1,len(paths)) if paths[i]!=0 and paths[i]!=-1]
+        possible_paths = [[paths[i]+self.heuristic_list[i],i]
+                          for i in range(1,len(paths)) if paths[i]!=0 and paths[i]!=-1]
         possible_paths.sort()
         for path in possible_paths:
             self.astar_path["path_list"].append([path[0],[self.temp,path[1]]])
 
-        print(self.astar_path["visited"])
-        print(self.astar_path["path_list"])
-
-        while(self.astar_path["path_list"]):
+        while self.astar_path["path_list"]:
             least_cost = self.astar_path["path_list"][0][0]
             if self.astar_path["path_list"][0][1][-1] not in self.astar_path["visited"]:
                 self.temp = self.astar_path["path_list"][0][1]
                 self.astar_path["path_list"].pop(0)
                 self.astar_path["visited"].append(self.temp[-1])
 
-                if(self.temp[-1] in self.goals):
+                if self.temp[-1] in self.goals:
                     return self.temp
                 else:
                     paths = self.cost_matrix[self.temp[-1]]
-                    possible_paths = [[paths[i]+self.heuristic_list[i],i] for i in range(1,len(paths)) if paths[i]!=0 and paths[i]!=-1]
+                    possible_paths = [[paths[i]+self.heuristic_list[i],i]
+                                      for i in range(1,len(paths)) if paths[i]!=0 and paths[i]!=-1]
                     if possible_paths:
                         for path in possible_paths:
-                            self.astar_path["path_list"].append([path[0]-self.heuristic_list[self.temp[-1]]+least_cost,self.temp + [path[1]]])
+                            self.astar_path["path_list"].append([path[0] -
+                                                                 self.heuristic_list[self.temp[-1]] +
+                                                                 least_cost,
+                                                                 self.temp + [path[1]]])
                         self.astar_path["path_list"].sort()
 
             else:
                 self.astar_path["path_list"].pop(0)
-
-            print(self.astar_path["visited"])
-            print(self.astar_path["path_list"])
 
         self.temp = self.start_point
         return []
     def reset_temp(self):
         self.temp = self.start_point
 
-if __name__ == "__main__":
-    cost = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 5, 9, -1, 6, -1, -1, -1, -1, -1],
-            [0, -1, 0, 3, -1, -1, 9, -1, -1, -1, -1], 
-            [0, -1, 2, 0, 1, -1, -1, -1, -1, -1, -1],
-            [0, 6, -1, -1, 0, -1, -1, 5, 7, -1, -1],
-            [0, -1, -1, -1, 2, 0, -1, -1, -1, 2, -1],
-            [0, -1, -1, -1, -1, -1, 0, -1, -1, -1, -1],
-            [0, -1, -1, -1, -1, -1, -1, 0, -1, -1, -1],
-            [0, -1, -1, -1, -1, 2, -1, -1, 0, -1, 8],
-            [0, -1, -1, -1, -1, -1, -1, -1, -1, 0, 7],
-            [0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0]]
-
-    heuristic = [0, 5, 7, 3, 4, 6, 0, 0, 6, 5, 0]
-    path_obj = Path_Calculator(cost, heuristic, 1, [6, 7, 10])
-    res = path_obj.calculate_ucs_path()
-    print(res)
-    path_obj.reset_temp()
-    res1 = path_obj.calculate_astar_path()
-    print(res1)
-    res2 = path_obj.calculate_dfs_path()
-    print(res2)
-
 def tri_traversal(cost, heuristic, start, goals):
     path_obj = Path_Calculator(cost, heuristic, start, goals)
 
-    res = path_obj.calculate_ucs_path()
+    ucs_path = path_obj.calculate_ucs_path()
     path_obj.reset_temp()
-    res1 = path_obj.calculate_astar_path()
+    astar_path = path_obj.calculate_astar_path()
     path_obj.reset_temp()
-    res2 = path_obj.calculate_dfs_path()
+    dfs_path = path_obj.calculate_dfs_path()
 
-    return res2, res, res1
+    return [dfs_path, ucs_path, astar_path]
+
+def DFS_Traversal(cost, start, goals):
+    path_obj = Path_Calculator(cost, [], start, goals)
+
+    res = path_obj.calculate_dfs_path()
+    return res
+
+def UCS_Traversal(cost, start, goals):
+    path_obj = Path_Calculator(cost, [], start, goals)
+
+    res = path_obj.calculate_ucs_path()
+    return res
+
+def A_star_Traversal(cost, heuristic, start, goals):
+    path_obj = Path_Calculator(cost, heuristic, start, goals)
+
+    res = path_obj.calculate_astar_path()
+    return res
