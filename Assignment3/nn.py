@@ -1,5 +1,12 @@
+from typing import Tuple
 import numpy as np
 from activations import Activation, Identity
+
+
+class Param:
+    def __init__(self, data: np.ndarray):
+        self.data = data
+        self.grad = None
 
 
 class Dense:
@@ -11,8 +18,8 @@ class Dense:
         self.in_len = in_len
         self.out_len = out_len
 
-        self.w = np.random.randn(out_len, in_len)
-        self.b = np.random.randn(out_len)
+        self.w = Param(np.random.randn(out_len, in_len))
+        self.b = Param(np.random.randn(out_len))
         self.activation = activation()
 
         self.dw = None
@@ -24,14 +31,18 @@ class Dense:
         if len(x.shape) < 2:
             x = x.reshape((1, x.shape[0]))
         # Tested
-        z = np.einsum("oi,mi->mo", self.w, x) + self.b
+        z = np.einsum("oi,mi->mo", self.w.data, x) + self.b.data
         return z, self.activation(z)
 
     def backward(self, dA: np.ndarray, z: np.ndarray, A_prev: np.ndarray) -> np.ndarray:
         """Backward pass"""
         # All tested
         dz = dA * self.activation(z, back=True)
-        self.dw = np.einsum("mo,mi->oi", dz, A_prev) / dz.shape[0]
-        self.db = np.einsum("mo->o", dz) / dz.shape[0]
-        dA_prev = np.einsum("oi,mo->mi", self.w, dz)
+        self.w.grad = np.einsum("mo,mi->oi", dz, A_prev) / dz.shape[0]
+        self.b.grad = np.einsum("mo->o", dz) / dz.shape[0]
+        dA_prev = np.einsum("oi,mo->mi", self.w.data, dz)
         return dA_prev
+
+    def parameters(self) -> Tuple:
+        # TODO: make this generic
+        return (self.w, self.b)
