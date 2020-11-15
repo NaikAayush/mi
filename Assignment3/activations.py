@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Activation:
     def __init__(self):
         pass
@@ -15,14 +16,46 @@ class Activation:
             return self.backward(x)
         return self.forward(x)
 
+
 class Identity(Activation):
     def forward(self, x):
         return x
-    
+
     def backward(self, x):
         return np.ones_like(x)
 
+
 class ReLU(Activation):
-    def forward(self, x):
+    def forward(self, x: np.ndarray) -> np.ndarray:
         x[x < 0] = 0
         return x
+
+    def backward(self, x: np.ndarray) -> np.ndarray:
+        x_grad = x.copy()
+        x_grad[x_grad < 0] = 0
+        x_grad[x_grad > 0] = 1
+        return x_grad
+
+
+class Sigmoid(Activation):
+    def forward(self, x: np.ndarray) -> np.ndarray:
+        return 1 / (1 + np.exp(-x))
+
+    def backward(self, x: np.ndarray) -> np.ndarray:
+        act = self(x)
+        return act * (1 - act)
+
+class LeakyReLU(Activation):
+    def __init__(self, alpha: float):
+        super().__init__()
+        self.alpha = alpha
+
+    def forward(self, x: np.ndarray) -> np.ndarray:
+        x[x < 0] *= self.alpha
+        return x
+
+    def backward(self, x: np.ndarray) -> np.ndarray:
+        x_g = x.copy()
+        x_g[x_g <= 0] = self.alpha
+        x_g[x_g > 0] = 1
+        return x_g
