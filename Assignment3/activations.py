@@ -27,8 +27,9 @@ class Identity(Activation):
 
 class ReLU(Activation):
     def forward(self, x: np.ndarray) -> np.ndarray:
-        x[x < 0] = 0
-        return x
+        z = x.copy()
+        z[z < 0] = 0
+        return z
 
     def backward(self, x: np.ndarray) -> np.ndarray:
         x_grad = x.copy()
@@ -45,14 +46,16 @@ class Sigmoid(Activation):
         act = self(x)
         return act * (1 - act)
 
+
 class LeakyReLU(Activation):
     def __init__(self, alpha: float):
         super().__init__()
         self.alpha = alpha
 
     def forward(self, x: np.ndarray) -> np.ndarray:
-        x[x < 0] *= self.alpha
-        return x
+        z = x.copy()
+        z[z < 0] *= self.alpha
+        return z
 
     def backward(self, x: np.ndarray) -> np.ndarray:
         x_g = x.copy()

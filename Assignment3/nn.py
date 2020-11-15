@@ -24,7 +24,8 @@ class Dense:
         if len(x.shape) < 2:
             x = x.reshape((1, x.shape[0]))
         # Tested
-        return self.activation(np.einsum("oi,mi->mo", self.w, x) + self.b)
+        z = np.einsum("oi,mi->mo", self.w, x) + self.b
+        return z, self.activation(z)
 
     def backward(self, dA: np.ndarray, z: np.ndarray, A_prev: np.ndarray) -> np.ndarray:
         """Backward pass"""
