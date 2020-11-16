@@ -15,7 +15,7 @@ model = Sequential(
 optimizer = optim.SGD(0.3, model.parameters(), l2_lambda=0.1, beta1=0.9)
 loss_fun = losses.BinaryCrossEntropy()
 
-steps = 200
+steps = 1000
 t = tqdm(total=steps)
 for _ in range(steps):
     optimizer.zero_grad()
