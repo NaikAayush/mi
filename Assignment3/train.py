@@ -7,15 +7,17 @@ from data import X_train, X_test, y_train, y_test
 import losses
 import optim
 
+# np.random.seed(0)
+
 model = Sequential(
     Dense(9, 20, ReLU, xavier_init=False),
     Dense(20, 20, LeakyReLU, xavier_init=False),
     Dense(20, 1, Sigmoid),
 )
 optimizer = optim.SGD(0.01, model.parameters())
-loss_fun = losses.BinaryCrossEntropy()
+loss_fun = losses.CosineLoss()
 
-steps = 3000
+steps = 2000
 t = tqdm(total=steps)
 for _ in range(steps):
     optimizer.zero_grad()
