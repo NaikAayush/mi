@@ -7,18 +7,23 @@ from data import X_train, X_test, y_train, y_test
 import losses
 import optim
 
-model = Sequential(Dense(9, 20, ReLU), Dense(20, 20, ReLU), Dense(20, 1, Sigmoid))
-optimizer = optim.SGD(0.2, model.parameters())
+model = Sequential(
+    Dense(9, 20, ReLU, xavier_init=True),
+    Dense(20, 20, ReLU, xavier_init=True),
+    Dense(20, 1, Sigmoid),
+)
+optimizer = optim.SGD(0.3, model.parameters(), l2_lambda=0.1, beta1=0.9)
+loss_fun = losses.BinaryCrossEntropy()
 
-t = tqdm(total=100)
-for _ in range(100):
+steps = 200
+t = tqdm(total=steps)
+for _ in range(steps):
     optimizer.zero_grad()
     a = model(X_train)
 
-    loss = losses.binary_cross_entropy(y_train, a)
-    print("Loss: ", loss.mean())
+    loss = loss_fun(y_train, a)
 
-    dA = losses.binary_cross_entropy_back(y_train, a)
+    dA = loss_fun.backward(y_train, a)
     model.backward(dA)
 
     optimizer.step()

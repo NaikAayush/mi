@@ -43,12 +43,20 @@ class Module:
 class Dense(Module):
     """A fully connected dense layer"""
 
-    def __init__(self, in_len: int, out_len: int, activation: Activation = Identity):
+    def __init__(
+        self,
+        in_len: int,
+        out_len: int,
+        activation: Activation = Identity,
+        xavier_init: bool = False,
+    ):
         super().__init__()
         self.in_len = in_len
         self.out_len = out_len
 
         self.w = Param(np.random.randn(out_len, in_len))
+        if xavier_init:
+            self.w.data *= np.sqrt(2 / in_len)
         self.b = Param(np.random.randn(out_len))
         self.activation = activation()
 
