@@ -4,19 +4,34 @@ from activations import Activation, Identity
 
 
 class Param:
+    """Stores a trainable parameter and its gradient
+
+    :param data: value to store
+    """
+
     def __init__(self, data: np.ndarray):
         self.data = data
         self.grad = None
 
 
 class Module:
+    """A general module to define a layer or multiple layers of a neural network"""
+
     def __init__(self):
         pass
 
     def __call__(self, x: np.ndarray) -> np.ndarray:
+        """Forward pass
+
+        :param x: Input for forward pass
+        """
         raise NotImplementedError("This module does not have a forward pass")
 
     def backward(self, dA: np.ndarray, *args):
+        """Backward pass. Calculates and stores gradients.
+
+        :param dA: gradient of the output of this module
+        """
         raise NotImplementedError("This module does not have a backward pass")
 
     @staticmethod
@@ -27,6 +42,7 @@ class Module:
             params.extend(attr.parameters())
 
     def parameters(self) -> Tuple[Param, ...]:
+        """Returns all trainable parameters"""
         params = []
         for attr in vars(self).values():
             self._add_param(params, attr)
@@ -41,7 +57,16 @@ class Module:
 
 
 class Dense(Module):
-    """A fully connected dense layer"""
+    """A fully connected dense layer
+
+    :param in_len: Size of input
+    :type in_len: int
+    :param out_len: Size of output
+    :type out_len: int
+    :param activation: Activation function. Default is identity.
+    :param xavier_init: Whether to use Xavier initialisation.
+        The weights are multiplied by sqrt(2 / in_len)
+    """
 
     def __init__(
         self,
@@ -84,6 +109,10 @@ class Dense(Module):
 
 
 class Sequential(Module):
+    """Sequential layers to stack multiple layers one after another.
+    All layers must be passed as different parameters.
+    """
+
     def __init__(self, *modules: Iterator[Module]):
         super().__init__()
         self.modules = tuple(modules)

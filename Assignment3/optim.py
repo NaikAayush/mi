@@ -5,19 +5,40 @@ from nn import Param
 
 
 class Optimizer:
+    """Generic class to define an optimizer for gradient descent
+
+    :param params: trainable parameters to optimize
+    """
+
     def __init__(self, params: Tuple[Param, ...]):
         self.params = params
 
     def zero_grad(self):
+        """Zeros out all the gradients.
+        To be run before doing a backward pass
+        """
         for param in self.params:
             if param.grad is not None:
                 param.grad.fill(0.0)
 
     def step(self):
-        pass
+        """Calculates one step of the optimization process
+        and updates the parameters
+        """
 
 
 class SGD(Optimizer):
+    """Stochastic Gradient Descent optimizer with support for L2 regularization
+    and momentum
+
+    :param params: trainable parameters to optimize
+    :param l2_lambda: (optional) lambda parameter of L2 regularization. If not given,
+        L2 regularization is not used (default).
+    :param beta1: (optional) beta parameter of momentum
+        (exponentially averaged velocity).
+        If not given, momentum is not used.
+    """
+
     def __init__(
         self, lr: float, params: Tuple[Param, ...], l2_lambda=None, beta1=None
     ):
