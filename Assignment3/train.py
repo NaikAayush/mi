@@ -2,20 +2,21 @@ import numpy as np
 from tqdm.auto import tqdm
 
 from nn import Dense, Sequential
-from activations import ReLU, Sigmoid
+from activations import LeakyReLU, ReLU, Sigmoid
 from data import X_train, X_test, y_train, y_test
 import losses
 import optim
 
 model = Sequential(
-    Dense(9, 20, ReLU, xavier_init=True),
-    Dense(20, 20, ReLU, xavier_init=True),
-    Dense(20, 1, Sigmoid),
+    Dense(9, 10, ReLU, xavier_init=False),
+    Dense(10, 10, LeakyReLU, xavier_init=False),
+    Dense(10, 5, LeakyReLU, xavier_init=False),
+    Dense(5, 1, Sigmoid),
 )
-optimizer = optim.SGD(0.3, model.parameters(), l2_lambda=0.1, beta1=0.9)
+optimizer = optim.SGD(0.007, model.parameters())
 loss_fun = losses.BinaryCrossEntropy()
 
-steps = 200
+steps = 2000
 t = tqdm(total=steps)
 for _ in range(steps):
     optimizer.zero_grad()
