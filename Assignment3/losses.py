@@ -38,4 +38,4 @@ class BinaryCrossEntropy(Loss):
         )
 
     def backward(self, y_real: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
-        return -y_real / y_pred + (1 - y_real) / (1 - y_pred + EPS)
+        return -(y_real / (y_pred + EPS)) + (1 - y_real) / (1 - y_pred + EPS)

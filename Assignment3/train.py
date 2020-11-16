@@ -8,15 +8,14 @@ import losses
 import optim
 
 model = Sequential(
-    Dense(9, 10, ReLU, xavier_init=False),
-    Dense(10, 10, LeakyReLU, xavier_init=False),
-    Dense(10, 5, LeakyReLU, xavier_init=False),
-    Dense(5, 1, Sigmoid),
+    Dense(9, 20, ReLU, xavier_init=False),
+    Dense(20, 20, LeakyReLU, xavier_init=False),
+    Dense(20, 1, Sigmoid),
 )
-optimizer = optim.SGD(0.007, model.parameters())
+optimizer = optim.SGD(0.01, model.parameters())
 loss_fun = losses.BinaryCrossEntropy()
 
-steps = 2000
+steps = 3000
 t = tqdm(total=steps)
 for _ in range(steps):
     optimizer.zero_grad()
