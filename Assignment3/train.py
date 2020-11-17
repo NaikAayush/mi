@@ -8,14 +8,14 @@ import losses
 import optim
 
 
-
+f = open("brr3.csv", "a")
 for i in range(100):
     np.random.seed(i)
     # print("Seed: ",i)
 
     model = Sequential(
-        Dense(9, 20, ReLU, xavier_init=False),
-        Dense(20, 20, LeakyReLU, xavier_init=False),
+        Dense(9, 20, ReLU, xavier_init=True),
+        Dense(20, 20, LeakyReLU, xavier_init=True),
         Dense(20, 1, Sigmoid),
     )
     optimizer = optim.SGD(0.01, model.parameters())
@@ -50,9 +50,10 @@ for i in range(100):
     y_pred = np.around(a)
     te_a = sum(y_pred == y_test) / len(y_test)
     # print("Test accuracy: ", sum(y_pred == y_test) / len(y_test))
+    print("Seed: ",i)
+    print("Train accuracy: ", tr_a)
+    print("Test accuracy: ", te_a)
     if tr_a and te_a > 0.85:
-        print("Seed: ",i)
-        print("Train accuracy: ", tr_a)
-        print("Test accuracy: ", te_a)
-        print(i,tr_a,te_a,sep=',',file=open('brr.csv','a'))
+        print(i,tr_a,te_a,sep=',',file=f)
     
+f.close()
