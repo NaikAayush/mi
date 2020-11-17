@@ -8,9 +8,9 @@ import losses
 import optim
 
 
-
-for i in range(100):
-    np.random.seed(i)
+y_preds = []
+for i in range(10):
+    # np.random.seed(i)
     # print("Seed: ",i)
 
     model = Sequential(
@@ -49,10 +49,19 @@ for i in range(100):
     a = model(X_test)
     y_pred = np.around(a)
     te_a = sum(y_pred == y_test) / len(y_test)
+    y_preds.append(y_pred)
+    print(i)
     # print("Test accuracy: ", sum(y_pred == y_test) / len(y_test))
     if tr_a and te_a > 0.85:
-        print("Seed: ",i)
+        print("Seed: ", i)
         print("Train accuracy: ", tr_a)
         print("Test accuracy: ", te_a)
-        print(i,tr_a,te_a,sep=',',file=open('brr.csv','a'))
-    
+        print(i, tr_a, te_a, sep=",", file=open("brr.csv", "a"))
+
+p_i = 5
+y_preds = np.array(y_preds)
+y_pred = y_preds.sum(axis=0)
+y_pred[y_pred < p_i] = 0
+y_pred[y_pred >= p_i] = 1
+te_a = sum(y_pred == y_test) / len(y_test)
+print(te_a)
