@@ -8,7 +8,9 @@ import losses
 import optim
 
 
-f = open("brr3.csv", "a")
+f = open("brr16.csv", "a")
+tot = 0
+n = 0
 for i in range(100):
     np.random.seed(i)
     # print("Seed: ",i)
@@ -18,10 +20,10 @@ for i in range(100):
         Dense(20, 20, LeakyReLU, xavier_init=True),
         Dense(20, 1, Sigmoid),
     )
-    optimizer = optim.SGD(0.01, model.parameters())
+    optimizer = optim.SGD(0.05, model.parameters(), l2_lambda=0.01)
     loss_fun = losses.BinaryCrossEntropy()
 
-    steps = 2000
+    steps = 1000
     # t = tqdm(total=steps)
     for _ in range(steps):
         optimizer.zero_grad()
@@ -55,5 +57,8 @@ for i in range(100):
     print("Test accuracy: ", te_a)
     if tr_a and te_a > 0.85:
         print(i,tr_a,te_a,sep=',',file=f)
-    
+        n += 1
+    tot += 1
+    print(f"{n}/{tot}")
+
 f.close()
