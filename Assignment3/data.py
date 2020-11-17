@@ -47,24 +47,40 @@ df = pd.read_csv("./LBW_Dataset.csv")
 
 # df = transformed
 
-df['HB'] = df['HB'].fillna(df.groupby(['Community','Age','Weight','Delivery phase','BP'])['HB'].transform('mean'))
-df['HB'] = df['HB'].fillna(df.groupby(['Community','Age','Weight','Delivery phase'])['HB'].transform('mean'))
-df['HB'] = df['HB'].fillna(df.groupby(['Community','Age','Weight'])['HB'].transform('mean'))
+# df['HB'] = df['HB'].fillna(df.groupby(['Community','Age','Weight','Delivery phase','BP'])['HB'].transform('mean'))
+# df['HB'] = df['HB'].fillna(df.groupby(['Community','Age','Weight','Delivery phase'])['HB'].transform('mean'))
+# df['HB'] = df['HB'].fillna(df.groupby(['Community','Age','Weight'])['HB'].transform('mean'))
+# df['HB'] = df['HB'].fillna(df.groupby(['Community','Age'])['HB'].transform('mean'))
+# df['HB'] = df['HB'].fillna(df.groupby('Community')['HB'].transform('mean'))
+# df['BP'] = df['BP'].fillna(df.groupby(['Community','Age','Weight','Delivery phase','HB'])['BP'].transform('mean'))
+# df['BP'] = df['BP'].fillna(df.groupby(['Community','Age','Weight','Delivery phase'])['BP'].transform('mean'))
+# df['BP'] = df['BP'].fillna(df.groupby(['Community','Age','Weight'])['BP'].transform('mean'))
+# df['BP'] = df['BP'].fillna(df.groupby(['Community','Age'])['BP'].transform('mean'))
+# df['BP'] = df['BP'].fillna(df.groupby('Community')['BP'].transform('mean'))
+# df['Age'] = df['Age'].fillna(df.groupby('Community')['Age'].transform('mean'))
+# df['Weight'] = df['Weight'].fillna(df.groupby(['Community','Age'])['Weight'].transform('mean'))
+# df['Weight'] = df['Weight'].fillna(df.groupby('Community')['Weight'].transform('mean'))
+
+#NEW
+df['HB'] = df['HB'].fillna(df.groupby(['Community','Age','BP'])['HB'].transform('mean'))
 df['HB'] = df['HB'].fillna(df.groupby(['Community','Age'])['HB'].transform('mean'))
 df['HB'] = df['HB'].fillna(df.groupby('Community')['HB'].transform('mean'))
-df['BP'] = df['BP'].fillna(df.groupby(['Community','Age','Weight','Delivery phase','HB'])['BP'].transform('mean'))
-df['BP'] = df['BP'].fillna(df.groupby(['Community','Age','Weight','Delivery phase'])['BP'].transform('mean'))
-df['BP'] = df['BP'].fillna(df.groupby(['Community','Age','Weight'])['BP'].transform('mean'))
+
+df['BP'] = df['BP'].fillna(df.groupby(['Community','Age','HB'])['BP'].transform('mean'))
 df['BP'] = df['BP'].fillna(df.groupby(['Community','Age'])['BP'].transform('mean'))
 df['BP'] = df['BP'].fillna(df.groupby('Community')['BP'].transform('mean'))
+
 df['Age'] = df['Age'].fillna(df.groupby('Community')['Age'].transform('mean'))
+
 df['Weight'] = df['Weight'].fillna(df.groupby(['Community','Age'])['Weight'].transform('mean'))
 df['Weight'] = df['Weight'].fillna(df.groupby('Community')['Weight'].transform('mean'))
+#NEWEND
+# df = df.drop(['Delivery phase','Residence','Education'], axis = 1) 
 
 df["Delivery phase"].fillna(df["Delivery phase"].mode()[0], inplace=True)
 df["Residence"].fillna(df["Residence"].mode()[0], inplace=True)
 df["Education"].fillna(df["Education"].mode()[0], inplace=True)
-
+#NEWEND
 df = pd.concat([df, df.loc[df[df.Result == 0].index.repeat(2)]])
 
 columns = list(df.columns)
