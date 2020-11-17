@@ -408,6 +408,19 @@ class NN:
 
             self.optimizer.step()
 
+    def accuracies(self, X_train, X_test, y_train, y_test):
+        train_pred = self.predict(X_train)
+        train_acc = sum(train_pred == y_train) / len(y_train)
+        train_acc = train_acc[0]
+        print(f"\nTrain accuracy: {train_acc*100:.03f}%")
+
+        test_pred = self.predict(X_test)
+        test_acc = sum(test_pred == y_test) / len(y_test)
+        test_acc = test_acc[0]
+        print(f"Test accuracy: {test_acc*100:.03f}%\n")
+
+        return train_acc, test_acc
+
     def predict(self, X):
 
         """
@@ -484,4 +497,5 @@ nn.fit(X_train, y_train)
 
 y_pred = nn.predict(X_test)
 
+nn.accuracies(X_train, X_test, y_train, y_test)
 nn.CM(y_test, y_pred)
