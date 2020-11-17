@@ -372,7 +372,7 @@ class SGD(Optimizer):
 ##### END #######
 
 # For reproducibility
-np.random.seed(94)
+np.random.seed(53)
 
 
 class NN:
