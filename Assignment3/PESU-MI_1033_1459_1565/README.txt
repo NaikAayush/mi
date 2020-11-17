@@ -49,7 +49,16 @@ Implementation Details
 
 We have tried to mimic the PyTorch API of Sequential and Dense layers, Losses as well as optimizers.
 
-We believe this is a key feature of our implementation as it makes the code very modular and extensible. Along with this, we also implemented L2 regularization, LeakyReLU and momentum which are some more extra features we implemented.
+We believe this is a key feature of our implementation as it makes the code very modular and extensible.
+
+More extra features:
+ - L2 regularization
+ - LeakyReLU activation function
+ - Momentum in optimizer
+ - Modular code
+ - Well documented code (every function and class has docstrings)
+ - Speed (runs over 2000 epochs in a few seconds)
+
 
 Neural network:
  - Used np.einsum (Einstein summation) for matric manipulation
