@@ -49,6 +49,8 @@ Implementation Details
 
 We have tried to mimic the PyTorch API of Sequential and Dense layers, Losses as well as optimizers.
 
+We believe this is a key feature of our implementation as it makes the code very modular and extensible. Along with this, we also implemented L2 regularization, LeakyReLU and momentum which are some more extra features we implemented.
+
 Neural network:
  - Used np.einsum (Einstein summation) for matric manipulation
  - Param class that tracks values as well as gradients
@@ -76,4 +78,11 @@ Confusion Matrix :
 Precision : 0.9285714285714286
 Recall : 1.0
 F1 SCORE : 0.962962962962963
+
+
+Steps to run
+------------
+
+cd src/
+python Neural_Net.py
 
