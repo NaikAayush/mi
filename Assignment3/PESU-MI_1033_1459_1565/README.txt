@@ -15,6 +15,7 @@ And the similar approach for the weight column as well.
 
 In the end, as the result set values were skewed towards 1 (75-25 split), we performed oversampling by duplicating the 0 values, to match the data spread.
 
+We did train test split using the default 75%-25% split.
 
 Neural Network Architecture
 ---------------------------
